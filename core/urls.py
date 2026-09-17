@@ -24,11 +24,11 @@ urlpatterns = [
     path("admin/", admin.site.urls),
 
     path("", include("products.urls")),
-    path("accounts/", include("accounts.urls")),
-    path("cart/", include("cart.urls")),
-    path("orders/", include("orders.urls")),
-    path("checkout/", include("customers.urls")),
-    path("payments/", include("payments.urls")),
+    # path("accounts/", include("accounts.urls")),
+    # path("cart/", include("cart.urls")),
+    # path("orders/", include("orders.urls")),
+    # path("checkout/", include("customers.urls")),
+    # path("payments/", include("payments.urls")),
 ]
 
 

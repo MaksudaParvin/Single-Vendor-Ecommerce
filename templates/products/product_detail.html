@@ -1,0 +1,43 @@
+<h1>{{ product.name }}</h1>
+
+{% if product.image %}
+    <img
+        src="{{ product.image.url }}"
+        alt="{{ product.name }}"
+        width="300"
+    >
+{% endif %}
+
+<p>Price: ৳{{ product.price }}</p>
+
+<p>
+    {{ product.description }}
+</p>
+
+<p>
+    Available Quantity: {{ product.quantity }}
+</p>
+
+<p>
+    Category: {{ product.category.name }}
+</p>
+
+
+{% if product.quantity > 0 %}
+    <p>In Stock</p>
+{% else %}
+    <p>Out of Stock</p>
+{% endif %}
+
+
+<h2>Related Products</h2>
+
+{% for related_product in related_products %}
+    <p>
+        <a href="{% url 'products:product_detail' related_product.slug %}">
+            {{ related_product.name }}
+        </a>
+    </p>
+{% empty %}
+    <p>No related products.</p>
+{% endfor %}

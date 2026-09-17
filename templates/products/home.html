@@ -1,0 +1,37 @@
+<h1>TechZone</h1>
+
+<h2>Categories</h2>
+
+{% for category in categories %}
+    <p>
+        {{ category.name }}
+        — {{ category.slug }}
+    </p>
+{% empty %}
+    <p>No categories available.</p>
+{% endfor %}
+
+
+<h2>Featured Products</h2>
+
+{% for product in featured_products %}
+    <p>
+        {{ product.name }}
+        — ৳{{ product.price }}
+        — {{ product.slug }}
+    </p>
+{% empty %}
+    <p>No featured products available.</p>
+{% endfor %}
+
+
+<h2>Latest Products</h2>
+
+{% for product in latest_products %}
+    <p>
+        {{ product.name }}
+        — ৳{{ product.price }}
+    </p>
+{% empty %}
+    <p>No products available.</p>
+{% endfor %}

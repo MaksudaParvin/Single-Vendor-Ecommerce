@@ -1,0 +1,36 @@
+<h1>Products</h1>
+
+{% if search_query %}
+    <p>Search results for: {{ search_query }}</p>
+{% endif %}
+
+{% if selected_category %}
+    <p>Category: {{ selected_category.name }}</p>
+{% endif %}
+
+
+{% for product in products %}
+
+    <div>
+        <h2>{{ product.name }}</h2>
+
+        <p>Price: ৳{{ product.price }}</p>
+
+        <p>
+            {{ product.short_description }}
+        </p>
+
+        <p>
+            Stock: {{ product.quantity }}
+        </p>
+
+        <a href="{% url 'products:product_detail' product.slug %}">
+            View Details
+        </a>
+    </div>
+
+{% empty %}
+
+    <p>No products found.</p>
+
+{% endfor %}
