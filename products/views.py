@@ -1,11 +1,20 @@
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, render
 
 from .models import Category, Product
 
 
 def home(request):
-    categories = Category.objects.all()
+    categories = (
+        Category.objects
+        .annotate(
+            product_count=Count(
+                "products",
+                filter=Q(products__is_active=True)
+            )
+        )
+        .order_by("name")
+    )
 
     featured_products = (
         Product.objects
@@ -15,6 +24,7 @@ def home(request):
             quantity__gt=0
         )
         .select_related("category")
+        .order_by("-created_at")
     )
 
     latest_products = (
@@ -24,10 +34,20 @@ def home(request):
         .order_by("-created_at")
     )[:8]
 
+    hero_product = featured_products.first()
+
     context = {
         "categories": categories,
-        "featured_products": featured_products,
+        "featured_products": featured_products[:6],
         "latest_products": latest_products,
+
+        "hero_product": hero_product,
+
+        "product_count": Product.objects.filter(
+            is_active=True
+        ).count(),
+
+        "category_count": Category.objects.count(),
     }
 
     return render(

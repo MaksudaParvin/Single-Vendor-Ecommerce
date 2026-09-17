@@ -1,37 +1,525 @@
-<h1>TechZone</h1>
+{% extends "base.html" %}
 
-<h2>Categories</h2>
-
-{% for category in categories %}
-    <p>
-        {{ category.name }}
-        — {{ category.slug }}
-    </p>
-{% empty %}
-    <p>No categories available.</p>
-{% endfor %}
+{% block title %}
+    TechZone — Premium Computers & Technology
+{% endblock %}
 
 
-<h2>Featured Products</h2>
+{% block content %}
 
-{% for product in featured_products %}
-    <p>
-        {{ product.name }}
-        — ৳{{ product.price }}
-        — {{ product.slug }}
-    </p>
-{% empty %}
-    <p>No featured products available.</p>
-{% endfor %}
+<!-- =========================================
+     HERO SECTION
+========================================= -->
+
+<section class="hero-section">
+
+    <div class="container">
+
+        <div class="hero-content">
+
+            <!-- Hero Text -->
+
+            <div class="hero-text">
+
+                <span class="eyebrow">
+                    — NEW ARRIVALS 2026
+                </span>
+
+                <h1>
+                    The Future
+                    <span>Runs on</span>
+                    Your Desk.
+                </h1>
+
+                <p>
+                    High-performance laptops, powerful desktops,
+                    premium monitors, and essential accessories —
+                    carefully selected for work, gaming, and creativity.
+                </p>
 
 
-<h2>Latest Products</h2>
+                <!-- Hero Buttons -->
 
-{% for product in latest_products %}
-    <p>
-        {{ product.name }}
-        — ৳{{ product.price }}
-    </p>
-{% empty %}
-    <p>No products available.</p>
-{% endfor %}
+                <div class="hero-actions">
+
+                    <a
+                        href="{% url 'products:product_list' %}"
+                        class="btn-primary-tech"
+                    >
+                        Shop All Products
+                    </a>
+
+                    {% if hero_product %}
+
+                        <a
+                            href="{% url 'products:product_detail' hero_product.slug %}"
+                            class="btn-outline-tech"
+                        >
+                            View {{ hero_product.name|truncatechars:22 }}
+                        </a>
+
+                    {% else %}
+
+                        <a
+                            href="{% url 'products:product_list' %}"
+                            class="btn-outline-tech"
+                        >
+                            Explore Products
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Hero Stats -->
+
+                <div class="hero-stats">
+
+                    <div class="hero-stat">
+
+                        <strong>
+                            {{ product_count }}+
+                        </strong>
+
+                        <span>
+                            PRODUCTS
+                        </span>
+
+                    </div>
+
+
+                    <div class="hero-stat">
+
+                        <strong>
+                            {{ category_count }}+
+                        </strong>
+
+                        <span>
+                            CATEGORIES
+                        </span>
+
+                    </div>
+
+
+                    <div class="hero-stat">
+
+                        <strong>
+                            100%
+                        </strong>
+
+                        <span>
+                            QUALITY
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Hero Product -->
+
+            <div class="hero-product-area">
+
+                {% if hero_product %}
+
+                    <div class="hero-product-image">
+
+                        {% if hero_product.image %}
+
+                            <img
+                                src="{{ hero_product.image.url }}"
+                                alt="{{ hero_product.name }}"
+                            >
+
+                        {% else %}
+
+                            <div class="image-placeholder">
+                                <i class='bx bx-laptop'></i>
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Floating shipping card -->
+
+                    <div class="shipping-badge">
+
+                        <span class="shipping-icon">
+                            <i class='bx bx-check'></i>
+                        </span>
+
+                        <div>
+                            <strong>
+                                Fast Delivery
+                            </strong>
+
+                            <small>
+                                On orders over ৳5,000
+                            </small>
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="hero-empty-image">
+                        <i class='bx bx-laptop'></i>
+
+                        <span>
+                            Add a featured product
+                        </span>
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================
+     CATEGORY SECTION
+========================================= -->
+
+<section class="category-section">
+
+    <div class="container">
+
+        <div class="section-heading">
+
+            <div>
+                <span class="section-eyebrow">
+                    BROWSE BY
+                </span>
+
+                <h2>
+                    Categories
+                </h2>
+            </div>
+
+        </div>
+
+
+        <div class="row g-3">
+
+            {% for category in categories %}
+
+                <div class="col-12 col-sm-6 col-lg-3">
+
+                    <a
+                        href="{% url 'products:category_products' category.slug %}"
+                        class="category-card"
+                    >
+
+                        <div class="category-icon">
+
+                            {% if forloop.counter == 1 %}
+                                <i class='bx bx-laptop'></i>
+
+                            {% elif forloop.counter == 2 %}
+                                <i class='bx bx-desktop'></i>
+
+                            {% elif forloop.counter == 3 %}
+                                <i class='bx bx-monitor'></i>
+
+                            {% elif forloop.counter == 4 %}
+                                <i class='bx bx-keyboard'></i>
+
+                            {% elif forloop.counter == 5 %}
+                                <i class='bx bx-mouse'></i>
+
+                            {% else %}
+                                <i class='bx bx-chip'></i>
+                            {% endif %}
+
+                        </div>
+
+
+                        <h3>
+                            {{ category.name }}
+                        </h3>
+
+
+                        {% if category.description %}
+
+                            <p>
+                                {{ category.description|truncatechars:45 }}
+                            </p>
+
+                        {% else %}
+
+                            <p>
+                                Explore our {{ category.name }}
+                                collection.
+                            </p>
+
+                        {% endif %}
+
+
+                        <span class="category-link">
+
+                            {{ category.product_count }}
+                            product{{ category.product_count|pluralize }}
+
+                            <i class='bx bx-right-arrow-alt'></i>
+
+                        </span>
+
+                    </a>
+
+                </div>
+
+            {% empty %}
+
+                <div class="col-12">
+
+                    <div class="empty-state">
+                        No categories available yet.
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================
+     FEATURED PRODUCTS
+========================================= -->
+
+<section class="featured-section">
+
+    <div class="container">
+
+        <div class="section-heading featured-heading">
+
+            <div>
+
+                <span class="section-eyebrow">
+                    HANDPICKED
+                </span>
+
+                <h2>
+                    Featured Products
+                </h2>
+
+            </div>
+
+
+            <a
+                href="{% url 'products:product_list' %}"
+                class="view-all-link"
+            >
+                View all
+                <i class='bx bx-right-arrow-alt'></i>
+            </a>
+
+        </div>
+
+
+        <div class="row g-3">
+
+            {% for product in featured_products %}
+
+                <div class="col-12 col-md-6 col-lg-4">
+
+                    <article class="product-card">
+
+                        <!-- Product Image -->
+
+                        <div class="product-card-image">
+
+                            {% if product.image %}
+
+                                <img
+                                    src="{{ product.image.url }}"
+                                    alt="{{ product.name }}"
+                                >
+
+                            {% else %}
+
+                                <div class="product-image-placeholder">
+                                    <i class='bx bx-laptop'></i>
+                                </div>
+
+                            {% endif %}
+
+
+                            {% if forloop.first %}
+
+                                <span class="product-badge badge-featured">
+                                    Featured
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- Product Content -->
+
+                        <div class="product-card-body">
+
+                            <span class="product-category">
+
+                                {% if product.category %}
+                                    {{ product.category.name }}
+                                {% else %}
+                                    COMPUTER
+                                {% endif %}
+
+                            </span>
+
+
+                            <h3>
+                                {{ product.name }}
+                            </h3>
+
+
+                            <p>
+                                {% if product.short_description %}
+                                    {{ product.short_description|truncatechars:65 }}
+                                {% else %}
+                                    {{ product.description|truncatechars:65 }}
+                                {% endif %}
+                            </p>
+
+
+                            <div class="product-meta">
+
+                                <div class="product-price">
+                                    ৳{{ product.price|floatformat:0 }}
+                                </div>
+
+                                {% if product.quantity > 0 %}
+
+                                    <span class="stock-status">
+                                        <i class='bx bx-check-circle'></i>
+                                        In Stock
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="stock-status out-of-stock">
+                                        Out of Stock
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- Buttons -->
+
+                            <div class="product-actions">
+
+                                <a
+                                    href="{% url 'products:product_detail' product.slug %}"
+                                    class="product-detail-btn"
+                                >
+                                    View Details
+                                </a>
+
+
+                                {% if product.quantity > 0 %}
+
+                                    <a
+                                        href="{% url 'cart:add_to_cart' product.id %}"
+                                        class="product-cart-btn"
+                                    >
+                                        Add to Cart
+                                    </a>
+
+                                {% else %}
+
+                                    <button
+                                        type="button"
+                                        class="product-cart-btn disabled"
+                                        disabled
+                                    >
+                                        Out of Stock
+                                    </button>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            {% empty %}
+
+                <div class="col-12">
+
+                    <div class="empty-state">
+                        No featured products available yet.
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================
+     PROMO SECTION
+========================================= -->
+
+<section class="promo-section">
+
+    <div class="container">
+
+        <div class="promo-card">
+
+            <span class="section-eyebrow">
+                LIMITED TIME
+            </span>
+
+            <h2>
+                Upgrade Your Setup.
+            </h2>
+
+            <p>
+                Discover powerful machines and essential
+                accessories built for your next level.
+            </p>
+
+            <a
+                href="{% url 'products:product_list' %}"
+                class="btn-primary-tech promo-button"
+            >
+                Browse Products
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

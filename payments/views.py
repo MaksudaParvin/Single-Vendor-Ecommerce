@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import redirect
 
-# Create your views here.
+
+def process_payment(request, order_id):
+    return redirect(
+        "orders:order_success",
+        order_id=order_id
+    )

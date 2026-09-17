@@ -1,3 +1,11 @@
 from django.shortcuts import render
 
-# Create your views here.
+
+def order_success(request, order_id):
+    return render(
+        request,
+        "orders/order_success.html",
+        {
+            "order_id": order_id
+        }
+    )
