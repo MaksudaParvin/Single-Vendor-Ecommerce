@@ -1,0 +1,294 @@
+/* =========================================
+   ORDER SUCCESS PAGE
+========================================= */
+
+.order-success-page {
+    min-height: calc(100vh - 54px);
+
+    background: #faf9f7;
+
+    display: flex;
+
+    justify-content: center;
+
+    padding: 55px 20px 80px;
+}
+
+
+.success-container {
+    width: 100%;
+
+    max-width: 600px;
+
+    text-align: center;
+}
+
+
+/* =========================================
+   SUCCESS ICON
+========================================= */
+
+.success-icon {
+    width: 68px;
+    height: 68px;
+
+    margin: 0 auto 18px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #16854c;
+
+    color: #fff;
+
+    border-radius: 50%;
+
+    font-size: 34px;
+
+    box-shadow:
+        0 0 0 9px #eeece7;
+}
+
+
+.success-icon i {
+    font-weight: 500;
+}
+
+
+/* =========================================
+   HEADING
+========================================= */
+
+.success-eyebrow {
+    display: block;
+
+    margin-top: 26px;
+    margin-bottom: 8px;
+
+    color: var(--orange);
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.6px;
+}
+
+
+.success-container h1 {
+    margin: 0;
+
+    color: #111;
+
+    font-family: var(--serif);
+
+    font-size: 34px;
+
+    line-height: 1.15;
+
+    letter-spacing: -0.8px;
+}
+
+
+.success-message {
+    margin: 10px 0 0;
+
+    color: #5f5a53;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+}
+
+
+.success-submessage {
+    margin: 4px 0 0;
+
+    color: #a09a92;
+
+    font-size: 9px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================
+   ORDER INFO CARD
+========================================= */
+
+.order-info-card {
+    margin-top: 25px;
+
+    padding: 20px 18px;
+
+    background: #fff;
+
+    border: 1px solid #e1dcd5;
+
+    border-radius: 11px;
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    column-gap: 40px;
+
+    row-gap: 20px;
+
+    text-align: left;
+}
+
+
+.order-info-item {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+.order-info-label {
+    color: #aaa39b;
+
+    font-size: 7px;
+
+    font-weight: 600;
+
+    letter-spacing: 1px;
+}
+
+
+.order-info-item strong {
+    color: #24211e;
+
+    font-size: 9px;
+
+    font-weight: 600;
+}
+
+
+.order-info-item strong.order-status {
+    color: #16854c;
+}
+
+
+/* =========================================
+   ACTION BUTTONS
+========================================= */
+
+.success-actions {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    margin-top: 23px;
+}
+
+
+.success-btn {
+    min-width: 116px;
+
+    height: 38px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 18px;
+
+    border-radius: 20px;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.success-btn.primary {
+    background: var(--orange);
+
+    border: 1px solid var(--orange);
+
+    color: #fff;
+}
+
+
+.success-btn.primary:hover {
+    background: var(--orange-dark);
+
+    border-color: var(--orange-dark);
+
+    color: #fff;
+
+    transform: translateY(-1px);
+}
+
+
+.success-btn.secondary {
+    background: #fff;
+
+    border: 1px solid #24211e;
+
+    color: #24211e;
+}
+
+
+.success-btn.secondary:hover {
+    background: #24211e;
+
+    color: #fff;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 600px) {
+
+    .order-success-page {
+        padding: 45px 16px 60px;
+    }
+
+
+    .success-container h1 {
+        font-size: 28px;
+    }
+
+
+    .order-info-card {
+        grid-template-columns: 1fr;
+
+        row-gap: 15px;
+    }
+
+
+    .success-actions {
+        flex-direction: column;
+
+        width: 100%;
+    }
+
+
+    .success-btn {
+        width: 100%;
+
+        max-width: 230px;
+    }
+}

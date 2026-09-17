@@ -1,27 +1,27 @@
-from django.shortcuts import render
-
-
 from django.contrib import messages
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 
 from products.models import Product
 from .models import Customer
-from orders.models import Order
+from orders.models import Order, OrderItem
 
 
 def checkout(request):
 
     cart = request.session.get("cart", {})
 
-    # Empty cart হলে Cart page-এ পাঠাবে
+    # Empty cart
     if not cart:
         return redirect("cart:cart")
 
     cart_items = []
     subtotal = 0
 
-    # Cart products
+    # =========================================
+    # GET CART PRODUCTS
+    # =========================================
+
     for product_id, quantity in cart.items():
 
         product = get_object_or_404(
@@ -32,40 +32,60 @@ def checkout(request):
 
         quantity = int(quantity)
 
-        # Stock check
+        # Check stock
         if quantity > product.quantity:
+
             messages.error(
                 request,
-                f"Only {product.quantity} units of {product.name} are available."
+                f"Only {product.quantity} units of "
+                f"{product.name} are available."
             )
+
             return redirect("cart:cart")
 
-        total_price = product.price * quantity
+        item_total = product.price * quantity
 
         cart_items.append({
             "product": product,
             "quantity": quantity,
-            "total_price": total_price,
+            "price": product.price,
+            "total_price": item_total,
         })
 
-        subtotal += total_price
+        subtotal += item_total
 
 
-    # ==============================
+    # =========================================
     # PLACE ORDER
-    # ==============================
+    # =========================================
 
     if request.method == "POST":
 
-        name = request.POST.get("name", "").strip()
-        phone = request.POST.get("phone", "").strip()
-        address = request.POST.get("address", "").strip()
+        name = request.POST.get(
+            "name",
+            ""
+        ).strip()
+
+        phone = request.POST.get(
+            "phone",
+            ""
+        ).strip()
+
+        address = request.POST.get(
+            "address",
+            ""
+        ).strip()
+
         payment_method = request.POST.get(
             "payment_method",
             "cod"
         )
 
-        # Validation
+
+        # =====================================
+        # VALIDATION
+        # =====================================
+
         if not name or not phone or not address:
 
             messages.error(
@@ -83,12 +103,11 @@ def checkout(request):
             )
 
 
-        # Currently only COD
         if payment_method != "cod":
 
             messages.error(
                 request,
-                "Please select a valid payment method."
+                "Please select Cash on Delivery."
             )
 
             return render(
@@ -101,12 +120,13 @@ def checkout(request):
             )
 
 
-        # ==============================
-        # SAVE ORDER
-        # ==============================
+        # =====================================
+        # CREATE ORDER + ORDER ITEMS
+        # =====================================
 
         with transaction.atomic():
 
+            # Create customer
             customer = Customer.objects.create(
                 name=name,
                 phone=phone,
@@ -114,54 +134,83 @@ def checkout(request):
             )
 
 
+            # Create main Order
+            order = Order.objects.create(
+                customer=customer,
+                total_price=subtotal,
+                status=Order.Status.PENDING,
+            )
+
+
+            # Create OrderItems
             for item in cart_items:
 
-                product = item["product"]
-                quantity = item["quantity"]
-                total_price = item["total_price"]
-
-                # Final stock check
                 product = Product.objects.select_for_update().get(
-                    id=product.id
+                    id=item["product"].id
                 )
 
+                quantity = item["quantity"]
+
+                # Final stock check
                 if quantity > product.quantity:
 
                     messages.error(
                         request,
-                        f"Not enough stock for {product.name}."
+                        f"Not enough stock for "
+                        f"{product.name}."
                     )
 
                     return redirect("cart:cart")
 
 
-                Order.objects.create(
-                    customer=customer,
+                item_total = product.price * quantity
+
+
+                OrderItem.objects.create(
+                    order=order,
                     product=product,
                     quantity=quantity,
-                    total_price=total_price,
+                    price=product.price,
+                    total_price=item_total,
                 )
 
 
                 # Reduce stock
                 product.quantity -= quantity
+
                 product.save(
                     update_fields=["quantity"]
                 )
 
 
-        # Empty cart
+        # =====================================
+        # CLEAR CART
+        # =====================================
+
         request.session["cart"] = {}
+
         request.session.modified = True
 
 
-        # Success page
-        return redirect("orders:order_success")
+        # =====================================
+        # SUCCESS MESSAGE
+        # =====================================
+
+        messages.success(
+            request,
+            "Order placed successfully!"
+        )
 
 
-    # ==============================
+        return redirect(
+            "orders:order_success",
+            order_id=order.id
+        )
+
+
+    # =========================================
     # CHECKOUT PAGE
-    # ==============================
+    # =========================================
 
     return render(
         request,

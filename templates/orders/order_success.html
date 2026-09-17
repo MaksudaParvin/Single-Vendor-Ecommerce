@@ -1,19 +1,152 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
-    Order Success — TechZone
+    Order Confirmed — TechZone
+{% endblock %}
+
+{% block extra_css %}
+<link
+    rel="stylesheet"
+    href="{% static 'css/orders/order_success.css' %}"
+>
 {% endblock %}
 
 {% block content %}
 
-<section style="padding: 100px 0; text-align: center;">
-    <div class="container">
-        <h1>Order Placed Successfully!</h1>
+<section class="order-success-page">
 
-        <p>
-            Order #{{ order_id }}
+    <div class="success-container">
+
+        <!-- Success Icon -->
+        <div class="success-icon">
+            <i class='bx bx-check'></i>
+        </div>
+
+
+        <!-- Heading -->
+        <span class="success-eyebrow">
+            CONFIRMED
+        </span>
+
+        <h1>
+            Order Placed Successfully!
+        </h1>
+
+        <p class="success-message">
+            Thank you, {{ order.customer.name }}!
+            Your order has been received.
         </p>
+
+        <p class="success-submessage">
+            We'll process your order and deliver it to your doorstep soon.
+        </p>
+
+
+        <!-- Order Information -->
+        <div class="order-info-card">
+
+            <div class="order-info-item">
+
+                <span class="order-info-label">
+                    ORDER ID
+                </span>
+
+                <strong>
+                    ORD-{{ order.id|stringformat:"05d" }}
+                </strong>
+
+            </div>
+
+
+            <div class="order-info-item">
+
+                <span class="order-info-label">
+                    CUSTOMER
+                </span>
+
+                <strong>
+                    {{ order.customer.name }}
+                </strong>
+
+            </div>
+
+
+            <div class="order-info-item">
+
+                <span class="order-info-label">
+                    TOTAL AMOUNT
+                </span>
+
+                <strong>
+                    ৳{{ order.total_price|floatformat:2 }}
+                </strong>
+
+            </div>
+
+
+            <div class="order-info-item">
+
+                <span class="order-info-label">
+                    PAYMENT
+                </span>
+
+                <strong>
+                    Cash on Delivery
+                </strong>
+
+            </div>
+
+
+            <div class="order-info-item">
+
+                <span class="order-info-label">
+                    STATUS
+                </span>
+
+                <strong class="order-status">
+                    {{ order.get_status_display }}
+                </strong>
+
+            </div>
+
+
+            <div class="order-info-item">
+
+                <span class="order-info-label">
+                    ESTIMATED DELIVERY
+                </span>
+
+                <strong>
+                    3–5 business days
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- Actions -->
+        <div class="success-actions">
+
+            <a
+                href="{% url 'home' %}"
+                class="success-btn primary"
+            >
+                Back to Home
+            </a>
+
+            <a
+                href="{% url 'products:product_list' %}"
+                class="success-btn secondary"
+            >
+                Continue Shopping
+            </a>
+
+        </div>
+
     </div>
+
 </section>
 
 {% endblock %}
