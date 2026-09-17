@@ -1,16 +1,349 @@
 {% extends "base.html" %}
+{% load static %}
+
 
 {% block title %}
-    Cart — TechZone
+    Shopping Cart — TechZone
 {% endblock %}
+
+
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/cart/cart.css' %}"
+>
+
+{% endblock %}
+
 
 {% block content %}
 
-<section style="padding: 100px 0; text-align: center;">
+<section class="cart-page">
+
     <div class="container">
-        <h1>Shopping Cart</h1>
-        <p>Your cart will appear here.</p>
+
+
+        {% if cart_items %}
+
+        <!-- =========================================
+             CART WITH PRODUCTS
+        ========================================== -->
+
+        <div class="cart-header">
+
+            <div>
+
+                <span class="cart-eyebrow">
+                    REVIEW
+                </span>
+
+                <h1>
+                    Shopping Cart
+                </h1>
+
+            </div>
+
+        </div>
+
+
+        <div class="cart-layout">
+
+
+            <!-- =====================================
+                 LEFT — CART ITEMS
+            ====================================== -->
+
+            <div class="cart-items">
+
+
+                {% for item in cart_items %}
+
+                <article class="cart-item">
+
+
+                    <!-- Product Image -->
+
+                    <div class="cart-item-image">
+
+                        {% if item.product.image %}
+
+                            <img
+                                src="{{ item.product.image.url }}"
+                                alt="{{ item.product.name }}"
+                            >
+
+                        {% else %}
+
+                            <div class="cart-item-placeholder">
+                                <i class='bx bx-laptop'></i>
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Product Information -->
+
+                    <div class="cart-item-content">
+
+
+                        <div class="cart-item-top">
+
+                            <div>
+
+                                <h2>
+                                    {{ item.product.name }}
+                                </h2>
+
+                                <span class="cart-item-category">
+
+                                    {% if item.product.category %}
+                                        {{ item.product.category.name }}
+                                    {% else %}
+                                        Computer
+                                    {% endif %}
+
+                                </span>
+
+                            </div>
+
+
+                            <!-- Remove -->
+
+                            <form
+                                method="POST"
+                                action="{% url 'cart:remove_from_cart' item.product.id %}"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="cart-remove-btn"
+                                    title="Remove item"
+                                >
+                                    <i class='bx bx-trash'></i>
+                                </button>
+
+                            </form>
+
+                        </div>
+
+
+                        <div class="cart-item-bottom">
+
+
+                            <!-- Quantity -->
+
+                            <div class="cart-quantity">
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'cart:decrease_quantity' item.product.id %}"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="quantity-btn"
+                                    >
+                                        −
+                                    </button>
+
+                                </form>
+
+
+                                <span class="quantity-value">
+                                    {{ item.quantity }}
+                                </span>
+
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'cart:increase_quantity' item.product.id %}"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="quantity-btn"
+                                    >
+                                        +
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+
+                            <!-- Price -->
+
+                            <div class="cart-item-price">
+
+                                ৳{{ item.total_price|floatformat:0 }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- =====================================
+                 RIGHT — ORDER SUMMARY
+            ====================================== -->
+
+            <aside class="order-summary">
+
+                <h2>
+                    Order Summary
+                </h2>
+
+
+                <!-- Items -->
+
+                <div class="summary-items">
+
+                    {% for item in cart_items %}
+
+                    <div class="summary-item">
+
+                        <span>
+                            {{ item.product.name }}
+                            ×{{ item.quantity }}
+                        </span>
+
+                        <span>
+                            ৳{{ item.total_price|floatformat:0 }}
+                        </span>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Subtotal -->
+
+                <div class="summary-row">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <span>
+                        ৳{{ subtotal|floatformat:0 }}
+                    </span>
+
+                </div>
+
+
+                <!-- Shipping -->
+
+                <div class="summary-row">
+
+                    <span>
+                        Shipping
+                    </span>
+
+                    <span class="shipping-free">
+                        Free
+                    </span>
+
+                </div>
+
+
+                <!-- Total -->
+
+                <div class="summary-total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong>
+                        ৳{{ subtotal|floatformat:0 }}
+                    </strong>
+
+                </div>
+
+
+                <!-- Checkout -->
+
+                <a
+                    href="{% url 'customers:checkout' %}"
+                    class="checkout-btn"
+                >
+                    Proceed to Checkout
+                    <i class='bx bx-right-arrow-alt'></i>
+                </a>
+
+
+                <!-- Continue Shopping -->
+
+                <a
+                    href="{% url 'products:product_list' %}"
+                    class="continue-shopping"
+                >
+                    Continue Shopping
+                </a>
+
+            </aside>
+
+        </div>
+
+
+        {% else %}
+
+        <!-- =========================================
+             EMPTY CART
+        ========================================== -->
+
+        <div class="empty-cart">
+
+            <div class="empty-cart-icon">
+
+                <span class="bag-blue">
+                    🛍️
+                </span>
+
+            </div>
+
+
+            <h1>
+                Your cart is empty
+            </h1>
+
+
+            <p>
+                Looks like you haven't added anything yet.
+            </p>
+
+
+            <a
+                href="{% url 'products:product_list' %}"
+                class="browse-products-btn"
+            >
+                Browse Products
+            </a>
+
+        </div>
+
+        {% endif %}
+
     </div>
+
 </section>
 
 {% endblock %}
