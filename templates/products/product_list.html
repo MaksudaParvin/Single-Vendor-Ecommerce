@@ -286,12 +286,40 @@
 
                                 {% if product.quantity > 0 %}
 
-                                    <a
-                                        href="{% url 'cart:add_to_cart' product.id %}"
-                                        class="product-cart-btn"
-                                    >
-                                        Add to Cart
-                                    </a>
+                                    {% if product.quantity > 0 %}
+
+                                        {% if product.in_cart %}
+
+                                            <a
+                                                href="{% url 'cart:cart' %}"
+                                                class="product-cart-btn in-cart"
+                                            >
+                                                <i class='bx bx-check'></i>
+                                                In Cart
+                                            </a>
+
+                                        {% else %}
+
+                                            <a
+                                                href="{% url 'cart:add_to_cart' product.id %}"
+                                                class="product-cart-btn"
+                                            >
+                                                Add to Cart
+                                            </a>
+
+                                        {% endif %}
+
+                                    {% else %}
+
+                                        <button
+                                            type="button"
+                                            class="product-cart-btn disabled"
+                                            disabled
+                                        >
+                                            Out of Stock
+                                        </button>
+
+                                    {% endif %}
 
                                 {% else %}
 

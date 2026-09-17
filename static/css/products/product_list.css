@@ -409,3 +409,21 @@
         height: 285px;
     }
 }
+
+.product-cart-btn.in-cart {
+    background: #191816;
+    border-color: #191816;
+    color: #ffffff;
+}
+
+
+.product-cart-btn.in-cart:hover {
+    background: #292724;
+    border-color: #292724;
+    color: #ffffff;
+}
+
+
+.product-cart-btn.in-cart i {
+    font-size: 13px;
+}

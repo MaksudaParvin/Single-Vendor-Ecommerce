@@ -1,16 +1,313 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
     Checkout — TechZone
 {% endblock %}
 
+{% block extra_css %}
+<link
+    rel="stylesheet"
+    href="{% static 'css/customer/checkout.css' %}"
+>
+{% endblock %}
+
 {% block content %}
 
-<section style="padding: 100px 0; text-align: center;">
+<section class="checkout-page">
+
     <div class="container">
-        <h1>Checkout</h1>
-        <p>Checkout form will appear here.</p>
+
+        <!-- Header -->
+        <div class="checkout-header">
+
+            <span class="checkout-eyebrow">
+                FINAL STEP
+            </span>
+
+            <h1>
+                Checkout
+            </h1>
+
+        </div>
+
+
+        <div class="checkout-layout">
+
+            <!-- =====================================
+                 LEFT SIDE
+            ====================================== -->
+
+            <div class="checkout-main">
+
+
+                <!-- Delivery Information -->
+
+                <div class="checkout-card">
+
+                    <h2>
+                        Delivery Information
+                    </h2>
+
+
+                    <form
+                        method="POST"
+                        action="{% url 'customers:checkout' %}"
+                        id="checkoutForm"
+                    >
+
+                        {% csrf_token %}
+
+
+                        <!-- Full Name -->
+
+                        <div class="checkout-field">
+
+                            <label for="id_name">
+                                FULL NAME <span>*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="id_name"
+                                name="name"
+                                placeholder="Your full name"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- Phone -->
+
+                        <div class="checkout-field">
+
+                            <label for="id_phone">
+                                PHONE NUMBER <span>*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="id_phone"
+                                name="phone"
+                                placeholder="+880 1XXXXXXXXX"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- Address -->
+
+                        <div class="checkout-field">
+
+                            <label for="id_address">
+                                DELIVERY ADDRESS <span>*</span>
+                            </label>
+
+                            <textarea
+                                id="id_address"
+                                name="address"
+                                rows="4"
+                                placeholder="Street, City, Province, Postal Code"
+                                required
+                            ></textarea>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <!-- =================================
+                     PAYMENT METHOD
+                ================================== -->
+
+                <div class="checkout-card payment-card">
+
+                    <h2>
+                        Payment Method
+                    </h2>
+
+
+                    <label
+                        class="payment-option"
+                        for="cash_on_delivery"
+                    >
+
+                        <input
+                            type="radio"
+                            id="cash_on_delivery"
+                            name="payment_method"
+                            value="cod"
+                            form="checkoutForm"
+                            checked
+                        >
+
+
+                        <span class="payment-icon">
+                            <i class='bx bx-credit-card'></i>
+                        </span>
+
+
+                        <span class="payment-info">
+
+                            <strong>
+                                Cash on Delivery
+                            </strong>
+
+                            <small>
+                                Pay when your order arrives
+                            </small>
+
+                        </span>
+
+
+                        <span class="payment-radio"></span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 RIGHT SIDE — ORDER SUMMARY
+            ====================================== -->
+
+            <aside class="checkout-summary">
+
+                <h2>
+                    Order Summary
+                </h2>
+
+
+                <!-- Products -->
+
+                <div class="checkout-summary-items">
+
+                    {% for item in cart_items %}
+
+                    <div class="checkout-summary-product">
+
+
+                        <div class="checkout-summary-image">
+
+                            {% if item.product.image %}
+
+                                <img
+                                    src="{{ item.product.image.url }}"
+                                    alt="{{ item.product.name }}"
+                                >
+
+                            {% else %}
+
+                                <div class="checkout-image-placeholder">
+                                    <i class='bx bx-laptop'></i>
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="checkout-summary-product-info">
+
+                            <strong>
+                                {{ item.product.name|truncatechars:25 }}
+                            </strong>
+
+                            <span>
+                                ×{{ item.quantity }}
+                            </span>
+
+                        </div>
+
+
+                        <span class="checkout-product-price">
+                            ৳{{ item.total_price|floatformat:0 }}
+                        </span>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Subtotal -->
+
+                <div class="checkout-summary-row">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <span>
+                        ৳{{ subtotal|floatformat:0 }}
+                    </span>
+
+                </div>
+
+
+                <!-- Shipping -->
+
+                <div class="checkout-summary-row">
+
+                    <span>
+                        Shipping
+                    </span>
+
+                    <span class="checkout-free">
+                        Free
+                    </span>
+
+                </div>
+
+
+                <!-- Total -->
+
+                <div class="checkout-total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong>
+                        ৳{{ subtotal|floatformat:2 }}
+                    </strong>
+
+                </div>
+
+
+                <!-- Place Order -->
+
+                <button
+                    type="submit"
+                    form="checkoutForm"
+                    class="place-order-btn"
+                >
+                    Place Order
+                </button>
+
+
+                <!-- Back to Cart -->
+
+                <a
+                    href="{% url 'cart:cart' %}"
+                    class="back-cart-link"
+                >
+                    ← Back to Cart
+                </a>
+
+            </aside>
+
+        </div>
+
     </div>
+
 </section>
 
 {% endblock %}

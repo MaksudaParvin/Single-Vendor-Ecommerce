@@ -88,6 +88,17 @@ def product_list(request):
             category=selected_category
         )
 
+    # Cart products
+    cart = request.session.get("cart", {})
+
+    cart_product_ids = {
+        str(product_id)
+        for product_id in cart.keys()
+    }
+
+    for product in products:
+        product.in_cart = str(product.id) in cart_product_ids
+
     context = {
         "products": products,
         "categories": categories,
