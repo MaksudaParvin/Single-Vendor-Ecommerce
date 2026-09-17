@@ -1,43 +1,320 @@
-<h1>{{ product.name }}</h1>
-
-{% if product.image %}
-    <img
-        src="{{ product.image.url }}"
-        alt="{{ product.name }}"
-        width="300"
-    >
-{% endif %}
-
-<p>Price: ৳{{ product.price }}</p>
-
-<p>
-    {{ product.description }}
-</p>
-
-<p>
-    Available Quantity: {{ product.quantity }}
-</p>
-
-<p>
-    Category: {{ product.category.name }}
-</p>
+{% extends "base.html" %}
+{% load static %}
 
 
-{% if product.quantity > 0 %}
-    <p>In Stock</p>
-{% else %}
-    <p>Out of Stock</p>
-{% endif %}
+{% block title %}
+    {{ product.name }} — TechZone
+{% endblock %}
 
 
-<h2>Related Products</h2>
+{% block extra_css %}
 
-{% for related_product in related_products %}
-    <p>
-        <a href="{% url 'products:product_detail' related_product.slug %}">
-            {{ related_product.name }}
+<link
+    rel="stylesheet"
+    href="{% static 'css/products/product_detail.css' %}"
+>
+
+{% endblock %}
+
+
+{% block content %}
+
+<section class="product-detail-page">
+
+    <div class="container">
+
+        <!-- =====================================
+             BACK TO PRODUCTS
+        ====================================== -->
+
+        <a
+            href="{% url 'products:product_list' %}"
+            class="back-to-products"
+        >
+            <i class='bx bx-left-arrow-alt'></i>
+            Back to Products
         </a>
-    </p>
-{% empty %}
-    <p>No related products.</p>
-{% endfor %}
+
+
+        <!-- =====================================
+             PRODUCT DETAIL LAYOUT
+        ====================================== -->
+
+        <div class="product-detail-layout">
+
+
+            <!-- =================================
+                 LEFT — PRODUCT IMAGE
+            ================================== -->
+
+            <div class="product-detail-image-wrapper">
+
+                {% if product.image %}
+
+                    <img
+                        src="{{ product.image.url }}"
+                        alt="{{ product.name }}"
+                        class="product-detail-image"
+                    >
+
+                {% else %}
+
+                    <div class="product-detail-placeholder">
+
+                        <i class='bx bx-laptop'></i>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- =================================
+                 RIGHT — PRODUCT INFORMATION
+            ================================== -->
+
+            <div class="product-detail-info">
+
+
+                <!-- Category -->
+
+                <span class="detail-category">
+
+                    {% if product.category %}
+                        {{ product.category.name }}
+                    {% else %}
+                        COMPUTER
+                    {% endif %}
+
+                </span>
+
+
+                <!-- Product Name -->
+
+                <h1 class="detail-product-name">
+                    {{ product.name }}
+                </h1>
+
+
+                <!-- Rating -->
+
+                <div class="detail-rating">
+
+                    <span class="detail-stars">
+                        ★★★★★
+                    </span>
+
+                    <span class="detail-rating-value">
+                        4.8
+                    </span>
+
+                    <span class="detail-review-count">
+                        (1,923 reviews)
+                    </span>
+
+                </div>
+
+
+                <!-- Price -->
+
+                <div class="detail-price">
+                    ৳{{ product.price|floatformat:0 }}
+                </div>
+
+
+                <!-- Description -->
+
+                <p class="detail-description">
+                    {{ product.description }}
+                </p>
+
+
+                <!-- =================================
+                     PRODUCT INFORMATION BOX
+                ================================== -->
+
+                <div class="detail-info-box">
+
+                    <div class="detail-info-column">
+
+                        <div class="detail-info-item">
+
+                            <span class="detail-info-label">
+                                AVAILABILITY
+                            </span>
+
+                            {% if product.quantity > 0 %}
+
+                                <span class="detail-info-value stock-available">
+                                    <span class="stock-dot"></span>
+                                    In Stock
+                                </span>
+
+                            {% else %}
+
+                                <span class="detail-info-value stock-unavailable">
+                                    Out of Stock
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="detail-info-item">
+
+                            <span class="detail-info-label">
+                                CATEGORY
+                            </span>
+
+                            <span class="detail-info-value">
+
+                                {% if product.category %}
+                                    {{ product.category.name }}
+                                {% else %}
+                                    Computer
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-info-column">
+
+                        <div class="detail-info-item">
+
+                            <span class="detail-info-label">
+                                STOCK
+                            </span>
+
+                            <span class="detail-info-value">
+                                {{ product.quantity }} units
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail-info-item">
+
+                            <span class="detail-info-label">
+                                SKU
+                            </span>
+
+                            <span class="detail-info-value">
+                                TZ-{{ product.id|stringformat:"04d" }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================
+                     ACTION BUTTONS
+                ================================== -->
+
+                <div class="detail-actions">
+
+                    {% if product.quantity > 0 %}
+
+                        <a
+                            href="{% url 'cart:add_to_cart' product.id %}"
+                            class="detail-add-cart"
+                        >
+                            <i class='bx bx-cart-add'></i>
+                            Add to Cart
+                        </a>
+
+                        <a
+                            href="#"
+                            class="detail-buy-now"
+                        >
+                            Buy Now
+                            <i class='bx bx-right-arrow-alt'></i>
+                        </a>
+
+                    {% else %}
+
+                        <button
+                            type="button"
+                            class="detail-add-cart disabled"
+                            disabled
+                        >
+                            Out of Stock
+                        </button>
+
+                        <button
+                            type="button"
+                            class="detail-buy-now disabled"
+                            disabled
+                        >
+                            Buy Now
+                            <i class='bx bx-right-arrow-alt'></i>
+                        </button>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- =================================
+                     SERVICE FEATURES
+                ================================== -->
+
+                <div class="detail-service-features">
+
+                    <div class="service-feature">
+
+                        <span class="service-icon">
+                            <i class='bx bx-package'></i>
+                        </span>
+
+                        <span>
+                            Free shipping over ৳10,000
+                        </span>
+
+                    </div>
+
+
+                    <div class="service-feature">
+
+                        <span class="service-icon">
+                            <i class='bx bx-refresh'></i>
+                        </span>
+
+                        <span>
+                            30-day returns
+                        </span>
+
+                    </div>
+
+
+                    <div class="service-feature">
+
+                        <span class="service-icon">
+                            <i class='bx bx-lock-alt'></i>
+                        </span>
+
+                        <span>
+                            Secure checkout
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
